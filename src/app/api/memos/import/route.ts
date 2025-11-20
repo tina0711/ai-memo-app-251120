@@ -15,12 +15,17 @@ export async function POST(request: NextRequest) {
 
     // 메모 타입 검증
     const validMemos = memos.filter(
-      (memo: any): memo is Memo =>
-        memo &&
-        typeof memo.title === 'string' &&
-        typeof memo.content === 'string' &&
-        typeof memo.category === 'string' &&
-        Array.isArray(memo.tags)
+      (memo: unknown): memo is Memo =>
+        typeof memo === 'object' &&
+        memo !== null &&
+        'title' in memo &&
+        'content' in memo &&
+        'category' in memo &&
+        'tags' in memo &&
+        typeof (memo as { title: unknown }).title === 'string' &&
+        typeof (memo as { content: unknown }).content === 'string' &&
+        typeof (memo as { category: unknown }).category === 'string' &&
+        Array.isArray((memo as { tags: unknown }).tags)
     )
 
     if (validMemos.length === 0) {
